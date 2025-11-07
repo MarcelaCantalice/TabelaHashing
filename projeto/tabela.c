@@ -1,10 +1,16 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+
+typedef struct ususario{
+    char username[15];
+    char senha[10];
+}Usuario;
 
 typedef struct hash{
     int qtd;
     int size;
-    int **itens;
+    Usuario **itens;
 }Hash;
 
 Hash* cria_hash(int size){
