@@ -23,7 +23,7 @@ int valorString(char *str){
 }
 
 int chaveDivisao(int chave, int TABLE_SIZE) {
-    return (chave % TABLE_SIZE);
+    return (abs(chave) % TABLE_SIZE);
 }
 
 int hashSenha(char *senha) {
