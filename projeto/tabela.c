@@ -3,7 +3,7 @@
 #include <string.h>
 
 typedef struct usuario {
-    char username[15];
+    char username[40];
     int hashSenha;
     struct usuario *prox; 
 } Usuario;
@@ -142,7 +142,7 @@ void liberaHash(Hash *h) {
 int main() {
     Hash *tabela = criaHash(7); 
     int opcao;
-    char user[15], senha[10];
+    char user[40], senha[10];
 
     do {
         printf("\n1 - Cadastrar usuario\n2 - Login\n3 - Remover usuario\n4 - Imprimir tabela\n0 - Sair\n> ");
@@ -152,7 +152,7 @@ int main() {
         switch (opcao) {
             case 1:
                 printf("Username: ");
-                fgets(user, 15, stdin); user[strcspn(user, "\n")] = '\0';
+                fgets(user, 40, stdin); user[strcspn(user, "\n")] = '\0';
                 printf("Senha: ");
                 fgets(senha, 10, stdin); senha[strcspn(senha, "\n")] = '\0';
                 insereHash(tabela, user, senha);
@@ -160,7 +160,7 @@ int main() {
 
             case 2:
                 printf("Username: ");
-                fgets(user, 15, stdin); user[strcspn(user, "\n")] = '\0';
+                fgets(user, 40, stdin); user[strcspn(user, "\n")] = '\0';
                 printf("Senha: ");
                 fgets(senha, 10, stdin); senha[strcspn(senha, "\n")] = '\0';
                 buscaHash(tabela, user, senha);
@@ -168,7 +168,7 @@ int main() {
 
             case 3:
                 printf("Username: ");
-                fgets(user, 15, stdin); user[strcspn(user, "\n")] = '\0';
+                fgets(user, 40, stdin); user[strcspn(user, "\n")] = '\0';
                 removeHash(tabela, user);
                 break;
 
