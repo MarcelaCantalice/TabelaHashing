@@ -95,13 +95,19 @@ Armazena:
 ```bash
 gcc projeto.c -o projeto.exe
 projeto.exe
-## ▶️ Como compilar e executar no Linux
+```
 
-No terminal, dentro da pasta do projeto, execute:
-
-### **Compilar:**
+### **Linux**
 ```bash
 gcc projeto.c -o projeto
+./projeto
+```
+
+---
+
+## 🖥️ Exemplo de Execução
+
+```text
 1 - Cadastrar usuário
 2 - Login
 3 - Remover usuário
@@ -113,4 +119,5 @@ Nome de usuário: bob zip
 Senha: 123
 
 Usuário 'bob zip' cadastrado na posição 2.
+```
 
