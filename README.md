@@ -1,72 +1,116 @@
-﻿# TabelaHashing
-Integrantes do grupo:
-Marcela Cantalice;
-Lucas Paraíso; 
-Luiz Camello.
+# Sistema de Autenticação com Tabela Hash em C
 
-Descrição do projeto
+**Integrantes do grupo:**  
+- Marcela Cantalice  
+- Lucas Paraíso  
+- Luiz Camello  
 
-O projeto consiste no desenvolvimento de um sistema de autenticação simples em linguagem C, utilizando uma tabela hash implementada do zero.O sistema simula o cadastro e login de usuários, armazenando apenas o nome de usuário e o hash da senha.A senha original não é salva.
-A tabela hash foi implementada com encadeamento separado (fechado) para o tratamento de colisões, utilizando structs, alocação dinâmica (malloc/free) e funções de hash.
+---
 
-Funcionalidades obrigatórias
-Cadastrar usuário: recebe username e senha, calcula o hash da senha e armazena na tabela.
-Login: busca o usuário e valida comparando o hash da senha digitada.
-Remover usuário: exclui o usuário da tabela.
-Imprimir tabela: exibe as posições da tabela, mostrando os usuários armazenados e as colisões.
+## 📌 Descrição do Projeto
 
-Requisitos técnicos
-Implementação com encadeamento separado (fechado) para tratamento de colisões.
-Uso das funções obrigatórias:
-criaHash
-insereHash
-buscaHash
-removeHash
-liberaHash
-imprimeHash
-Uso de alocação dinâmica (malloc e free).
-Funções de hash utilizadas:
-valorString: converte o nome em valor numérico.
-chaveDivisao: aplica o método da divisão para definir a posição na tabela.
-hashSenha: gera o hash da senha para armazenar sem guardar o texto original.
+Este projeto consiste no desenvolvimento de um **sistema de autenticação simples em C**, utilizando uma **tabela hash implementada do zero**.
 
-Como compilar e executar
-No Windows:
+O sistema permite cadastrar e autenticar usuários, armazenando:
+
+- **Nome de usuário**
+- **Hash da senha (senha original nunca é salva)**
+
+Para o tratamento de colisões, foi utilizada a técnica de **encadeamento separado**, com uso de **structs**, **alocação dinâmica (malloc/free)** e **funções de hash**.
+
+---
+
+## 🧩 Funcionalidades
+
+✔ **Cadastrar usuário**  
+Recebe nome e senha, calcula o hash da senha e armazena na tabela hash.
+
+✔ **Login**  
+Busca o usuário e valida o acesso comparando o hash da senha digitada.
+
+✔ **Remover usuário**  
+Exclui o usuário da tabela, ajustando a lista encadeada em caso de colisão.
+
+✔ **Imprimir tabela**  
+Mostra todas as posições da tabela hash, exibindo usuários e as colisões no mesmo índice.
+
+---
+
+## 🛠️ Requisitos Técnicos Atendidos
+
+- Implementação de hash com **encadeamento separado** para tratamento de colisões.  
+- Uso das funções obrigatórias:
+  - `criaHash`
+  - `insereHash`
+  - `buscaHash`
+  - `removeHash`
+  - `liberaHash`
+  - `imprimeHash`
+- Funções de hash:
+  - `valorString` → converte a string do username em número  
+  - `chaveDivisao` → aplica método da divisão  
+  - `hashSenha` → gera hash da senha (não armazena texto original)
+- Uso de **alocação dinâmica** (`malloc` e `free`)
+
+---
+
+## 🧱 Estrutura do Código
+
+### **Struct Usuario**
+Armazena:
+- `username`
+- `hashSenha`
+- ponteiro `prox` (para tratar colisões em lista encadeada)
+
+### **Struct Hash**
+Armazena:
+- tamanho da tabela
+- vetor de ponteiros para usuários
+
+### Principais Funções
+
+- **valorString**  
+  Converte o nome de usuário em valor numérico para o hash.
+  
+- **chaveDivisao**  
+  Calcula o índice da tabela usando o método da divisão.
+
+- **hashSenha**  
+  Gera um hash numérico a partir da senha digitada.
+
+- **insereHash / buscaHash / removeHash**  
+  CRUD completo da tabela hash.
+
+- **imprimeHash**  
+  Mostra a tabela e suas colisões.
+
+- **liberaHash**  
+  Libera toda a memória alocada dinamicamente.
+
+---
+
+## ▶️ Como Compilar e Executar
+
+### **Windows**
+```bash
 gcc projeto.c -o projeto.exe
 projeto.exe
+## ▶️ Como compilar e executar no Linux
 
-No Linux:
+No terminal, dentro da pasta do projeto, execute:
+
+### **Compilar:**
+```bash
 gcc projeto.c -o projeto
-./projeto
-
-Estrutura do código
-
-Struct Usuario: armazena o nome, o hash da senha e o ponteiro para o próximo usuário (colisão).
-
-Struct Hash: contém o tamanho da tabela e um vetor de ponteiros para usuários.
-
-Função valorString: transforma o nome em número.
-
-Função chaveDivisao: define o índice da tabela aplicando o operador módulo.
-
-Função hashSenha: gera um hash numérico a partir da senha digitada.
-
-Função imprimeHash: mostra todas as posições ocupadas e colisões.
-
-O tratamento de colisões é feito por meio de listas encadeadas.
-
-Exemplo de execução
-1 - Cadastrar usuario
+1 - Cadastrar usuário
 2 - Login
-3 - Remover usuario
+3 - Remover usuário
 4 - Imprimir tabela
 0 - Sair
 > 1
-Username: bob zip
+
+Nome de usuário: bob zip
 Senha: 123
-Usuario 'bob zip' cadastrado na posicao 2.
- 
- 
 
-
+Usuário 'bob zip' cadastrado na posição 2.
 
