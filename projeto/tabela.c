@@ -1,72 +1,149 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <limits.h>
 
 typedef struct usuario {
-    char username[15];
+    char username[40];
     int hashSenha;
-    struct usuario *prox; 
+    struct usuario *prox;
 } Usuario;
 
 typedef struct {
     int tamanho;
-    Usuario **tabela; 
+    int numElementos;
+    Usuario **tabela;
 } Hash;
 
 
-int valorString(char *str){
+int valorString(char *str) {
     int i, valor = 7;
     int tam = strlen(str);
-    for(i = 0; i < tam; i++)
-        valor = 31 * valor + (int) str[i];
-    return valor;
+    for (i = 0; i < tam; i++) {
+        
+        valor = (valor % (INT_MAX / 31)) * 31 + (int)str[i];
+    }
+    return abs(valor);
 }
+
 
 int chaveDivisao(int chave, int TABLE_SIZE) {
     return (abs(chave) % TABLE_SIZE);
 }
+
 
 int hashSenha(char *senha) {
     int hash = 0;
     for (int i = 0; senha[i] != '\0'; i++) {
         hash = (hash * 37 + senha[i]) % 100000;
     }
-    return hash;
+    return abs(hash);
 }
 
+
 Hash* criaHash(int tamanho) {
-    Hash *h = (Hash*) malloc(sizeof(Hash));
-    if (h != NULL) {
-        h->tamanho = tamanho;
-        h->tabela = (Usuario**) malloc(tamanho * sizeof(Usuario*));
-        if (h->tabela == NULL) {
-            free(h);
-            return NULL;
-        }
-        for (int i = 0; i < tamanho; i++)
-            h->tabela[i] = NULL;
+    if (tamanho <= 0) {
+        printf("Erro: Tamanho invalido para tabela hash.\n");
+        return NULL;
     }
+
+    Hash *h = malloc(sizeof(Hash));
+    if (h == NULL) {
+        printf("Erro: Falha ao alocar memoria para Hash.\n");
+        return NULL;
+    }
+
+    h->tamanho = tamanho;
+    h->numElementos = 0;
+    h->tabela = malloc(tamanho * sizeof(Usuario*));
+    
+    if (h->tabela == NULL) {
+        printf("Erro: Falha ao alocar memoria para tabela.\n");
+        free(h);
+        return NULL;
+    }
+
+    for (int i = 0; i < tamanho; i++) {
+        h->tabela[i] = NULL;
+    }
+
     return h;
 }
 
-int insereHash(Hash *h, char *username, char *senha) {
-    if (h == NULL) return 0;
+
+int usuarioExiste(Hash *h, char *username) {
+    if (h == NULL || username == NULL) return 0;
 
     int pos = chaveDivisao(valorString(username), h->tamanho);
-    Usuario *novo = (Usuario*) malloc(sizeof(Usuario));
-    if (novo == NULL) return 0;
+    Usuario *atual = h->tabela[pos];
+
+    while (atual != NULL) {
+        if (strcmp(atual->username, username) == 0) {
+            return 1; 
+        }
+        atual = atual->prox;
+    }
+
+    return 0; 
+}
+
+
+int insereHash(Hash *h, char *username, char *senha) {
+    if (h == NULL) {
+        printf("Erro: Tabela hash nao inicializada.\n");
+        return 0;
+    }
+
+    if (username == NULL || strlen(username) == 0) {
+        printf("Erro: Username nao pode ser vazio.\n");
+        return 0;
+    }
+
+    if (senha == NULL || strlen(senha) == 0) {
+        printf("Erro: Senha nao pode ser vazia.\n");
+        return 0;
+    }
+
+    
+    if (usuarioExiste(h, username)) {
+        printf("Erro: Usuario '%s' ja existe!\n", username);
+        return 0;
+    }
+
+    int pos = chaveDivisao(valorString(username), h->tamanho);
+    Usuario *novo = malloc(sizeof(Usuario));
+    
+    if (novo == NULL) {
+        printf("Erro: Falha ao alocar memoria para novo usuario.\n");
+        return 0;
+    }
 
     strcpy(novo->username, username);
     novo->hashSenha = hashSenha(senha);
     novo->prox = h->tabela[pos];
     h->tabela[pos] = novo;
+    h->numElementos++;
 
     printf("Usuario '%s' cadastrado na posicao %d.\n", username, pos);
     return 1;
 }
 
+
 Usuario* buscaHash(Hash *h, char *username, char *senha) {
-    if (h == NULL) return NULL;
+    if (h == NULL) {
+        printf("Erro: Tabela hash nao inicializada.\n");
+        return NULL;
+    }
+
+    if (username == NULL || strlen(username) == 0) {
+        printf("Erro: Username nao pode ser vazio.\n");
+        return NULL;
+    }
+
+    if (senha == NULL || strlen(senha) == 0) {
+        printf("Erro: Senha nao pode ser vazia.\n");
+        return NULL;
+    }
 
     int pos = chaveDivisao(valorString(username), h->tamanho);
     Usuario *atual = h->tabela[pos];
@@ -84,8 +161,17 @@ Usuario* buscaHash(Hash *h, char *username, char *senha) {
     return NULL;
 }
 
+
 int removeHash(Hash *h, char *username) {
-    if (h == NULL) return 0;
+    if (h == NULL) {
+        printf("Erro: Tabela hash nao inicializada.\n");
+        return 0;
+    }
+
+    if (username == NULL || strlen(username) == 0) {
+        printf("Erro: Username nao pode ser vazio.\n");
+        return 0;
+    }
 
     int pos = chaveDivisao(valorString(username), h->tamanho);
     Usuario *atual = h->tabela[pos];
@@ -96,20 +182,28 @@ int removeHash(Hash *h, char *username) {
         atual = atual->prox;
     }
 
-    if (atual == NULL) return 0; 
+    if (atual == NULL) {
+        return 0;
+    }
 
-    if (anterior == NULL)
+    if (anterior == NULL) {
         h->tabela[pos] = atual->prox;
-    else
+    } else {
         anterior->prox = atual->prox;
+    }
 
     free(atual);
+    h->numElementos--;
     printf("Usuario '%s' removido com sucesso.\n", username);
     return 1;
 }
 
+
 void imprimeHash(Hash *h) {
-    if (h == NULL) return;
+    if (h == NULL) {
+        printf("Erro: Tabela hash nao inicializada.\n");
+        return;
+    }
 
     printf("\n----- TABELA HASH -----\n");
     for (int i = 0; i < h->tamanho; i++) {
@@ -123,6 +217,7 @@ void imprimeHash(Hash *h) {
     }
     printf("------------------------\n");
 }
+
 
 void liberaHash(Hash *h) {
     if (h != NULL) {
@@ -139,36 +234,63 @@ void liberaHash(Hash *h) {
     }
 }
 
+
+void limpaBuffer() {
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF);
+}
+
+
 int main() {
-    Hash *tabela = criaHash(7); 
+    Hash *tabela = criaHash(7);
+    if (tabela == NULL) {
+        printf("Erro critico: Nao foi possivel criar a tabela hash.\n");
+        return 1;
+    }
+
     int opcao;
-    char user[15], senha[10];
+    char user[40], senha[50];
 
     do {
         printf("\n1 - Cadastrar usuario\n2 - Login\n3 - Remover usuario\n4 - Imprimir tabela\n0 - Sair\n> ");
-        scanf("%d", &opcao);
-        getchar(); 
+
+        if (scanf("%d", &opcao) != 1) {
+            printf("Entrada invalida! Digite um numero.\n");
+            limpaBuffer();
+            continue;
+        }
+        limpaBuffer();
 
         switch (opcao) {
             case 1:
                 printf("Username: ");
-                fgets(user, 15, stdin); user[strcspn(user, "\n")] = '\0';
+                if (fgets(user, sizeof(user), stdin) != NULL) {
+                    user[strcspn(user, "\n")] = '\0';
+                }
                 printf("Senha: ");
-                fgets(senha, 10, stdin); senha[strcspn(senha, "\n")] = '\0';
+                if (fgets(senha, sizeof(senha), stdin) != NULL) {
+                    senha[strcspn(senha, "\n")] = '\0';
+                }
                 insereHash(tabela, user, senha);
                 break;
 
             case 2:
                 printf("Username: ");
-                fgets(user, 15, stdin); user[strcspn(user, "\n")] = '\0';
+                if (fgets(user, sizeof(user), stdin) != NULL) {
+                    user[strcspn(user, "\n")] = '\0';
+                }
                 printf("Senha: ");
-                fgets(senha, 10, stdin); senha[strcspn(senha, "\n")] = '\0';
+                if (fgets(senha, sizeof(senha), stdin) != NULL) {
+                    senha[strcspn(senha, "\n")] = '\0';
+                }
                 buscaHash(tabela, user, senha);
                 break;
 
             case 3:
                 printf("Username: ");
-                fgets(user, 15, stdin); user[strcspn(user, "\n")] = '\0';
+                if (fgets(user, sizeof(user), stdin) != NULL) {
+                    user[strcspn(user, "\n")] = '\0';
+                }
                 removeHash(tabela, user);
                 break;
 
