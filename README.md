@@ -16,7 +16,7 @@ O sistema permite cadastrar e autenticar usuários, armazenando:
 - **Nome de usuário**
 - **Hash da senha (senha original nunca é salva)**
 
-Para o tratamento de colisões, foi utilizada a técnica de **encadeamento separado**, com uso de **structs**, **alocação dinâmica (malloc/free)** e **funções de hash**.
+Para o tratamento de colisões, foi utilizada a técnica de **encadeamento separado**, com uso de **structs**, **alocação dinâmica (malloc/free)** e **funções de hash**. As colisões são tratadas com encadeamento separado: cada posição da tabela é uma lista encadeada, e novos usuários são inseridos sempre no início da lista.
 
 ---
 
@@ -47,7 +47,7 @@ Mostra todas as posições da tabela hash, exibindo usuários e as colisões no 
   - `liberaHash`
   - `imprimeHash`
 - Funções de hash:
-  - `valorString` → converte a string do username em número  
+  - `valorString` → converte o username para um valor numérico usando multiplicação por 31 com proteção contra overflow.
   - `chaveDivisao` → aplica método da divisão  
   - `hashSenha` → gera hash da senha (não armazena texto original)
 - Uso de **alocação dinâmica** (`malloc` e `free`)
@@ -120,4 +120,5 @@ Senha: 123
 
 Usuário 'bob zip' cadastrado na posição 2.
 ```
+
 
