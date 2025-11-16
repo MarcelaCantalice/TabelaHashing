@@ -5,7 +5,6 @@
 
 typedef struct usuario {
     char username[40];
-    char username[40];
     int hashSenha;
     struct usuario *prox;
 } Usuario;
