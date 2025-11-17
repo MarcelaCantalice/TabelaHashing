@@ -1,9 +1,9 @@
 # Sistema de Autenticação com Tabela Hash em C
 
 **Integrantes do grupo:**  
-- Marcela Cantalice  
-- Lucas Paraíso  
-- Luiz Camello  
+- Marcela Cantalice ; 
+- Lucas Paraíso ; 
+- Luiz Camello ; 
 
 ---
 
@@ -120,5 +120,6 @@ Senha: 123
 
 Usuário 'bob zip' cadastrado na posição 2.
 ```
+
 
 
