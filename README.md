@@ -91,10 +91,11 @@ Armazena:
 
 ## ▶️ Como Compilar e Executar
 
-### **Windows**
+### **Windows (PowerShell ou VS Code)**
 ```bash
 gcc projeto.c -o projeto.exe
-projeto.exe
+.\projeto.exe
+
 ```
 
 ### **Linux**
@@ -120,6 +121,7 @@ Senha: 123
 
 Usuário 'bob zip' cadastrado na posição 2.
 ```
+
 
 
 
